@@ -3,7 +3,8 @@ from django.db import models
 
 class Teacher(models.Model):
     name = models.CharField(max_length=100)
-    # We can add "availability" logic later
+    availability_start = models.DateField(null=True, blank=True)
+    availability_end = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.name
