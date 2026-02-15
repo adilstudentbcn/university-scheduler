@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Course History</title>
+    <style>
+        /* --- GLOBAL STYLES --- */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; }
+        
+        /* --- NAVIGATION BAR --- */
+        .navbar { background-color: #333; overflow: hidden; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .navbar a { float: left; display: block; color: white; text-align: center; padding: 10px 20px; text-decoration: none; font-size: 16px; border-radius: 4px; margin-right: 10px; transition: background 0.3s; }
+        .navbar a:hover { background-color: #555; }
+        .navbar a.active { background-color: #4CAF50; color: white; } /* Green for current page */
+        .navbar .right { float: right; background-color: #d9534f; } /* Red for Admin */
+
+        /* --- PAGE SPECIFIC STYLES --- */
+        .container { padding: 40px; max-width: 800px; margin: auto; text-align: center; }
+        .upload-box { 
+            border: 2px dashed #ccc; padding: 40px; 
+            display: inline-block; margin-top: 20px; border-radius: 10px;
+            background-color: white;
+        }
+        button {
+            padding: 10px 20px; background-color: #007bff; color: white; 
+            border: none; cursor: pointer; border-radius: 5px; font-size: 16px;
+        }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <a href="{% url 'schedule_list' %}">📅 Scheduler</a>
+        <a href="{% url 'upload_history' %}" class="active">📂 Upload History</a>
+        <a href="{% url 'history_list' %}">📜 View History</a>
+        <a href="/admin/" class="right" target="_blank">⚙️ Admin Panel</a>
+    </div>
+
+    <div class="container">
+        <h1>📂 Upload Google Sheet History</h1>
+        <p>Please upload the Excel (.xlsx) file containing past schedules.</p>
+
+        <div class="upload-box">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="excel_file" accept=".xlsx" required>
+                <br><br>
+                <button type="submit">🚀 Upload and Parse</button>
+            </form>
+        </div>
+        
+        <br><br>
+        <a href="{% url 'schedule_list' %}" style="color: #666; text-decoration: none;">⬅️ Back to Scheduler</a>
+    </div>
+
+</body>
+</html>

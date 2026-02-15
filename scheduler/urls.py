@@ -2,8 +2,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # The main page with the table
+    # 1. The Main Schedule Page
     path("", views.schedule_list, name="schedule_list"),
-    # The new hidden URL that runs the logic
     path("run-scheduler/", views.run_scheduler, name="run_scheduler"),
+    # 2. The New History Pages
+    path("upload-history/", views.upload_history_view, name="upload_history"),
+    path("history/", views.history_list_view, name="history_list"),
 ]

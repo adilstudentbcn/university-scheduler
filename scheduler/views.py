@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from .models import ScheduleSlot
-from .logic import generate_schedule  # Import your automation script
+from .models import ScheduleSlot, CourseHistory  # <--- Added CourseHistory
+from .logic import generate_schedule
+from .utils import parse_and_save_excel  # <--- Added your new utility
 
 
 def schedule_list(request):
@@ -21,3 +22,22 @@ def run_scheduler(request):
         generate_schedule()  # <--- This runs your logic!
 
     return redirect("schedule_list")
+
+
+def upload_history_view(request):
+    if request.method == "POST" and request.FILES.get("excel_file"):
+        myfile = request.FILES["excel_file"]
+
+        # Pass the file directly to our parser
+        success = parse_and_save_excel(myfile)
+
+        if success:
+            return redirect("history_list")
+
+    return render(request, "scheduler/upload_history.html")
+
+
+def history_list_view(request):
+    # Show the table of parsed data, sorted by Year (newest first)
+    history = CourseHistory.objects.all().order_by("-year", "course_name")
+    return render(request, "scheduler/history_list.html", {"history": history})

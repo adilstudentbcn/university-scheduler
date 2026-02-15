@@ -18,7 +18,7 @@ class Classroom(models.Model):
 
 class Term(models.Model):
     """
-    Represents the Time Block (e.g., 'Module 5' in the PDF).
+    Represents the Time Block (e.g., 'Module 5').
     """
 
     name = models.CharField(max_length=50)  # e.g. "Module 05"
@@ -65,3 +65,17 @@ class ScheduleSlot(models.Model):
 
     def __str__(self):
         return f"{self.course} | {self.term}"
+
+
+class CourseHistory(models.Model):
+    """
+    Stores the parsed history from the Google Sheet.
+    """
+
+    course_code = models.CharField(max_length=20)
+    course_name = models.CharField(max_length=200)
+    year = models.IntegerField()
+    teacher_name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.year} - {self.course_name} ({self.teacher_name})"
