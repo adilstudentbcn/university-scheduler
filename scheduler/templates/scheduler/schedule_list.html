@@ -8,12 +8,46 @@
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
         th { background-color: #4CAF50; color: white; }
         tr:nth-child(even) { background-color: #f2f2f2; }
-        h1 { color: #333; }
+        h1 { color: #333; display: inline-block;}
+        
+        /* Style for the container to align button right */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Style for the new button */
+        .btn-generate {
+            background-color: #28a745; /* Green */
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .btn-generate:hover {
+            background-color: #218838; /* Darker Green on hover */
+        }
     </style>
 </head>
 <body>
-    <h1>📅 Master Course Schedule</h1>
     
+    <div class="header-container">
+        <h1>📅 Master Course Schedule</h1>
+        
+        <form action="{% url 'run_scheduler' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn-generate">
+                🚀 Generate Schedule
+            </button>
+        </form>
+    </div>
+
     <table>
         <thead>
             <tr>
@@ -35,7 +69,10 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5" style="text-align:center;">No classes scheduled yet. Run the auto-scheduler!</td>
+                <td colspan="5" style="text-align:center; padding: 30px;">
+                    No classes scheduled yet. <br>
+                    <strong>Click the green button above to start!</strong>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
