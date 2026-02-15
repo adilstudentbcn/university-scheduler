@@ -3,8 +3,6 @@ from django.db import models
 
 class Teacher(models.Model):
     name = models.CharField(max_length=100)
-    availability_start = models.DateField(null=True, blank=True)
-    availability_end = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -12,35 +10,58 @@ class Teacher(models.Model):
 
 class Classroom(models.Model):
     name = models.CharField(max_length=50)
-    capacity = models.IntegerField(help_text="Max students")
-    has_projector = models.BooleanField(default=True)
-
-    def __str__(self):
-        return f"{self.name} (Cap: {self.capacity})"
-
-
-class Module(models.Model):
-    name = models.CharField(max_length=100)
-    duration_weeks = models.IntegerField(default=3)
-    is_core = models.BooleanField(default=True)
-    # Self-referential ManyToMany for prerequisites (e.g., Module B needs Module A)
-    prerequisites = models.ManyToManyField("self", symmetrical=False, blank=True)
+    capacity = models.IntegerField()
 
     def __str__(self):
         return self.name
 
 
-class ScheduleSlot(models.Model):
+class Term(models.Model):
     """
-    The 'solution' to the scheduling problem.
-    It links a Module to a Teacher, Room, and Time.
+    Represents the Time Block (e.g., 'Module 5' in the PDF).
     """
 
-    module = models.ForeignKey(Module, on_delete=models.CASCADE)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)  # e.g. "Module 05"
     start_date = models.DateField()
     end_date = models.DateField()
 
     def __str__(self):
-        return f"{self.module} - {self.start_date}"
+        return f"{self.name} ({self.start_date} - {self.end_date})"
+
+
+class Course(models.Model):
+    """
+    Represents the Subject (e.g., 'Calculus 1', 'Motion Design').
+    """
+
+    TIME_CHOICES = [
+        ("MORNING", "09:00 - 12:20"),
+        ("AFTERNOON", "13:00 - 16:20"),
+        ("EVENING", "17:00 - 20:20"),
+    ]
+
+    name = models.CharField(max_length=100)
+    term = models.ForeignKey(Term, on_delete=models.CASCADE, related_name="courses")
+    teacher = models.ForeignKey(
+        Teacher, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    preferred_time = models.CharField(
+        max_length=20, choices=TIME_CHOICES, default="MORNING"
+    )
+    duration_weeks = models.IntegerField(default=3)
+
+    def __str__(self):
+        return f"{self.name} ({self.preferred_time})"
+
+
+class ScheduleSlot(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
+    term = models.ForeignKey(Term, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    time_slot = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"{self.course} | {self.term}"

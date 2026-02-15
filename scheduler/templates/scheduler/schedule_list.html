@@ -10,7 +10,6 @@
         tr:nth-child(even) { background-color: #f2f2f2; }
         h1 { color: #333; display: inline-block;}
         
-        /* Style for the container to align button right */
         .header-container {
             display: flex;
             justify-content: space-between;
@@ -18,9 +17,8 @@
             margin-bottom: 20px;
         }
 
-        /* Style for the new button */
         .btn-generate {
-            background-color: #28a745; /* Green */
+            background-color: #28a745;
             color: white;
             padding: 12px 24px;
             border: none;
@@ -28,22 +26,21 @@
             font-size: 16px;
             cursor: pointer;
             font-weight: bold;
-            transition: background-color 0.3s;
         }
         .btn-generate:hover {
-            background-color: #218838; /* Darker Green on hover */
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
     
     <div class="header-container">
-        <h1>📅 Master Course Schedule</h1>
+        <h1>Harbour Space Schedule (Parallel)</h1>
         
         <form action="{% url 'run_scheduler' %}" method="post">
             {% csrf_token %}
             <button type="submit" class="btn-generate">
-                🚀 Generate Schedule
+                Generate Schedule
             </button>
         </form>
     </div>
@@ -51,9 +48,9 @@
     <table>
         <thead>
             <tr>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Module</th>
+                <th>Term (Module)</th>
+                <th>Time Slot</th>
+                <th>Course Name</th>
                 <th>Teacher</th>
                 <th>Classroom</th>
             </tr>
@@ -61,9 +58,17 @@
         <tbody>
             {% for slot in slots %}
             <tr>
-                <td>{{ slot.start_date }}</td>
-                <td>{{ slot.end_date }}</td>
-                <td><strong>{{ slot.module.name }}</strong></td>
+                <td>
+                    <strong>{{ slot.term.name }}</strong><br>
+                    <small>{{ slot.start_date }} - {{ slot.end_date }}</small>
+                </td>
+                
+                <td style="font-weight:bold; color: #555;">
+                    {{ slot.time_slot }}
+                </td>
+
+                <td>{{ slot.course.name }}</td>
+                
                 <td>{{ slot.teacher.name }}</td>
                 <td>{{ slot.classroom.name }}</td>
             </tr>
@@ -71,7 +76,7 @@
             <tr>
                 <td colspan="5" style="text-align:center; padding: 30px;">
                     No classes scheduled yet. <br>
-                    <strong>Click the green button above to start!</strong>
+                    <strong>Make sure you added Data in Admin, then click Generate!</strong>
                 </td>
             </tr>
             {% endfor %}
